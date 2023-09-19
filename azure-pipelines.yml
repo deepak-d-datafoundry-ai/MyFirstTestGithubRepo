@@ -15,14 +15,6 @@ steps:
   displayName: 'Run Hello World Script'
 
 
-# Login to Azure Container Registry
-- task: Docker@2
-  displayName: 'Login to Azure Container Registry'
-  inputs:
-    containerRegistry: 'Azure-Container-Registry-Service-Connection'  # Replace with your ACR Service Connection name
-    command: 'login'
-
-
 - task: Docker@2
   displayName: 'Build Docker Image'
   inputs:
@@ -32,79 +24,4 @@ steps:
     Dockerfile: '**/Dockerfile'
     tags: 'latest'
 
-
-# Build Docker Image
-- task: Docker@2
-  displayName: 'Build Docker image'
-  inputs:
-    containerRegistry: 'Azure-Container-Registry-Service-Connection'  # Replace with your ACR Service Connection name
-    repository: 'ACR-For-Azure-DevOps-Pipelines'  # Replace with your repository name
-    command: 'build'
-    Dockerfile: '**/Dockerfile'
-    tags: 'latest'
-
-# Push Docker Image to ACR
-- task: Docker@2
-  displayName: 'Push Docker image to ACR'
-  inputs:
-    containerRegistry: 'Azure-Container-Registry-Service-Connection'  # Replace with your ACR Service Connection name
-    repository: 'ACR-For-Azure-DevOps-Pipelines'  # Replace with your repository name
-    command: 'push'
-    tags: 'latest'
-
-
-- task: SonarSource.sonarcloud.[...].SonarCloudPrepare@1  # Use SonarQubePrepare if you're using SonarQube
-  inputs:
-    SonarCloud: 'your-service-connection-name'  # Or 'SonarQube' for SonarQube
-    organization: 'your-sonar-organization'  # Only for SonarCloud
-    scannerMode: 'Other'
-    extraProperties: |
-      sonar.projectKey=your-project-key
-      sonar.projectName=your-project-name
-
-# Build and analyze using Maven
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'  # Adjust your JDK version
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'clean verify sonar:sonar'  # Includes the SonarQube analysis
-
-# If you're using Gradle instead, you'd use something like:
-# - script: ./gradlew clean build sonarqube --info
-#   displayName: 'Build with Gradle and analyze with SonarQube'
-
-# Publish the results to Sonar server
-- task: SonarSource.sonarcloud.[...].SonarCloudPublish@1  # Use SonarQubePublish for SonarQube
-  inputs:
-    pollingTimeoutSec: '300'
-
-# Build the Docker image
-- task: Docker@2
-  inputs:
-    containerRegistry: 'yourDockerServiceConnection' # Service connection to Docker Hub or other registry
-    repository: 'your-repo-name'
-    command: 'build'
-    Dockerfile: '**/Dockerfile' # Path to your Dockerfile
-    tags: |
-      latest
-
-# Install Trivy
-- script: |
-    wget -qO- https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-    sudo apt-get install software-properties-common
-    sudo add-apt-repository "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main"
-    sudo apt-get update
-    sudo apt-get install trivy
-  displayName: 'Install Trivy'
-
-# Scan the Docker image with Trivy
-- script: |
-    trivy image --severity HIGH,CRITICAL your-repo-name:latest
-  displayName: 'Trivy Vulnerability Scan'
-    
 
