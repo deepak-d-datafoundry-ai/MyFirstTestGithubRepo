@@ -45,3 +45,28 @@ steps:
   inputs:
     pollingTimeoutSec: '300'
 
+# Build the Docker image
+- task: Docker@2
+  inputs:
+    containerRegistry: 'yourDockerServiceConnection' # Service connection to Docker Hub or other registry
+    repository: 'your-repo-name'
+    command: 'build'
+    Dockerfile: '**/Dockerfile' # Path to your Dockerfile
+    tags: |
+      latest
+
+# Install Trivy
+- script: |
+    wget -qO- https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+    sudo apt-get install software-properties-common
+    sudo add-apt-repository "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main"
+    sudo apt-get update
+    sudo apt-get install trivy
+  displayName: 'Install Trivy'
+
+# Scan the Docker image with Trivy
+- script: |
+    trivy image --severity HIGH,CRITICAL your-repo-name:latest
+  displayName: 'Trivy Vulnerability Scan'
+    
+
