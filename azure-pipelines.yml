@@ -19,7 +19,7 @@ steps:
 - task: Docker@2
   displayName: 'Login to Azure Container Registry'
   inputs:
-    containerRegistry: 'yourACRServiceConnection'  # Replace with your ACR Service Connection name
+    containerRegistry: 'Azure-Container-Registry-Service-Connection'  # Replace with your ACR Service Connection name
     command: 'login'
 
 
@@ -37,8 +37,8 @@ steps:
 - task: Docker@2
   displayName: 'Build Docker image'
   inputs:
-    containerRegistry: 'yourACRServiceConnection'  # Replace with your ACR Service Connection name
-    repository: 'yourRepositoryName'  # Replace with your repository name
+    containerRegistry: 'Azure-Container-Registry-Service-Connection'  # Replace with your ACR Service Connection name
+    repository: 'ACR-For-Azure-DevOps-Pipelines'  # Replace with your repository name
     command: 'build'
     Dockerfile: '**/Dockerfile'
     tags: 'latest'
@@ -47,8 +47,8 @@ steps:
 - task: Docker@2
   displayName: 'Push Docker image to ACR'
   inputs:
-    containerRegistry: 'yourACRServiceConnection'  # Replace with your ACR Service Connection name
-    repository: 'yourRepositoryName'  # Replace with your repository name
+    containerRegistry: 'Azure-Container-Registry-Service-Connection'  # Replace with your ACR Service Connection name
+    repository: 'ACR-For-Azure-DevOps-Pipelines'  # Replace with your repository name
     command: 'push'
     tags: 'latest'
 
