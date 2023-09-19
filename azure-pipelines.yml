@@ -14,7 +14,7 @@ steps:
     python hello_world.py
   displayName: 'Run Hello World Script'
 
-
+# Build and Push Docker Image
 - task: Docker@2
   displayName: 'Build Docker Image'
   inputs:
