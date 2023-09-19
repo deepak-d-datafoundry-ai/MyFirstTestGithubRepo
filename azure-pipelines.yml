@@ -13,3 +13,35 @@ steps:
 - script: |
     python hello_world.py
   displayName: 'Run Hello World Script'
+
+
+- task: SonarSource.sonarcloud.[...].SonarCloudPrepare@1  # Use SonarQubePrepare if you're using SonarQube
+  inputs:
+    SonarCloud: 'your-service-connection-name'  # Or 'SonarQube' for SonarQube
+    organization: 'your-sonar-organization'  # Only for SonarCloud
+    scannerMode: 'Other'
+    extraProperties: |
+      sonar.projectKey=your-project-key
+      sonar.projectName=your-project-name
+
+# Build and analyze using Maven
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'  # Adjust your JDK version
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'clean verify sonar:sonar'  # Includes the SonarQube analysis
+
+# If you're using Gradle instead, you'd use something like:
+# - script: ./gradlew clean build sonarqube --info
+#   displayName: 'Build with Gradle and analyze with SonarQube'
+
+# Publish the results to Sonar server
+- task: SonarSource.sonarcloud.[...].SonarCloudPublish@1  # Use SonarQubePublish for SonarQube
+  inputs:
+    pollingTimeoutSec: '300'
+
