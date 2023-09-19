@@ -15,6 +15,33 @@ steps:
   displayName: 'Run Hello World Script'
 
 
+# Login to Azure Container Registry
+- task: Docker@2
+  displayName: 'Login to Azure Container Registry'
+  inputs:
+    containerRegistry: 'yourACRServiceConnection'  # Replace with your ACR Service Connection name
+    command: 'login'
+
+# Build Docker Image
+- task: Docker@2
+  displayName: 'Build Docker image'
+  inputs:
+    containerRegistry: 'yourACRServiceConnection'  # Replace with your ACR Service Connection name
+    repository: 'yourRepositoryName'  # Replace with your repository name
+    command: 'build'
+    Dockerfile: '**/Dockerfile'
+    tags: 'latest'
+
+# Push Docker Image to ACR
+- task: Docker@2
+  displayName: 'Push Docker image to ACR'
+  inputs:
+    containerRegistry: 'yourACRServiceConnection'  # Replace with your ACR Service Connection name
+    repository: 'yourRepositoryName'  # Replace with your repository name
+    command: 'push'
+    tags: 'latest'
+
+
 - task: SonarSource.sonarcloud.[...].SonarCloudPrepare@1  # Use SonarQubePrepare if you're using SonarQube
   inputs:
     SonarCloud: 'your-service-connection-name'  # Or 'SonarQube' for SonarQube
