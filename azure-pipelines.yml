@@ -5,14 +5,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.x'
-    addToPath: true
 
-- script: |
-    python hello_world.py
-  displayName: 'Run Hello World Script'
 
 # Build and Push Docker Image
 - task: Docker@2
