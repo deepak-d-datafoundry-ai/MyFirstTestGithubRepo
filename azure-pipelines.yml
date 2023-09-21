@@ -6,10 +6,10 @@ pool:
 
 
 variables:
-  imageName: 'helloworld:$(Build.BuildId)'
-  registryName: 'acrforazuredevopspipelines.azurecr.io'
-  registryUsername: 'acrforazuredevopspipelines'
-  registryPassword: '6L03Z/bSkkeHreu6gPGBnocHZZUgnWs6tj1cDRigtV+ACRACYe1y'
+  imageName: '$(yourImageName):$(Build.BuildId)'
+  registryName: '$(registryName)'
+  registryUsername: '$(registryUsername)'
+  registryPassword: '$(registryPassword)'
 
 
 steps:
