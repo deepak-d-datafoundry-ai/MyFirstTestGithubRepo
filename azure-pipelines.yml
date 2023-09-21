@@ -25,4 +25,10 @@ steps:
     tags: 'latest'
 
 
+- task: Docker@2
+  inputs:
+    containerRegistry: 'Azure-Container-Registry-Service-Connection'
+    repository: 'helloworld'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
 
