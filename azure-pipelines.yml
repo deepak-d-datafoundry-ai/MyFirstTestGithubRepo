@@ -4,6 +4,14 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+
+variables:
+  imageName: 'helloworld:$(Build.BuildId)'
+  registryName: 'acrforazuredevopspipelines.azurecr.io'
+  registryUsername: 'acrforazuredevopspipelines'
+  registryPassword: '6L03Z/bSkkeHreu6gPGBnocHZZUgnWs6tj1cDRigtV+ACRACYe1y'
+
+
 steps:
 - task: UsePythonVersion@0
   inputs:
@@ -14,13 +22,15 @@ steps:
     python hello_world.py
   displayName: 'Run Hello World Script'
 
+- script: docker build -t $(registryName)/$(imageName) .
+  displayName: 'Docker Build'
+
+- script: |
+    docker login $(registryName) -u $(registryUsername) -p $(registryPassword)
+    docker push $(registryName)/$(imageName)
+  displayName: 'Docker Push'
 
 
 
-- task: Docker@2
-  inputs:
-    containerRegistry: 'Azure-Container-Registry-Service-Connection'
-    repository: 'helloworld'
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
+
 
