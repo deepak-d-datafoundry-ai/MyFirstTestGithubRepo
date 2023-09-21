@@ -4,12 +4,6 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  imageName: '$(YOURIMAGENAME):$(Build.BuildId)'
-  registryName: '$(REGISTRYNAME)'
-  registryUsername: '$(REGISTRYUSERNAME)'
-  registryPassword: '$(REGISTRYPASSWORD)'
-
 
 steps:
 - task: UsePythonVersion@0
@@ -21,11 +15,11 @@ steps:
     python hello_world.py
   displayName: 'Run Hello World Script'
 
-- script: docker build -t $(registryName)/$(imageName) .
+- script: docker build -t $(YOURIMAGENAME):$(Build.BuildId) .
   displayName: 'Docker Build'
 
 - script: |
-    docker login $(registryName) -u $(registryUsername) -p $(registryPassword)
-    docker push $(registryName)/$(imageName)
+    docker login $(REGISTRYNAME) -u $(REGISTRYUSERNAME) -p $(REGISTRYPASSWORD)
+    docker push $(REGISTRYNAME)/$(YOURIMAGENAME):$(Build.BuildId)
   displayName: 'Docker Push'
 
