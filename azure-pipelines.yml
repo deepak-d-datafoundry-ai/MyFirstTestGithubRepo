@@ -18,8 +18,9 @@ steps:
 - task: Docker@2
   displayName: 'Build Image'
   inputs:
-    repository: 'ACR-For-Azure-DevOps-Pipelines'
-    command: 'build'
+    containerRegistry: 'Azure-Container-Registry-Service-Connection'
+    repository: 'helloworld'
+    command: 'buildAndPush'
     Dockerfile: '**/Dockerfile'
     tags: 'latest'
 
