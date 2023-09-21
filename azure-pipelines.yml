@@ -15,7 +15,7 @@ steps:
     python hello_world.py
   displayName: 'Run Hello World Script'
 
-- script: docker build -t $(YOURIMAGENAME):$(Build.BuildId) .
+- script: docker build -t $(REGISTRYNAME)/$(YOURIMAGENAME):$(Build.BuildId) .
   displayName: 'Docker Build'
 
 - script: |
