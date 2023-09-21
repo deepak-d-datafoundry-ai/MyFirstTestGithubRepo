@@ -4,12 +4,11 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-
 variables:
-  imageName: '$(yourImageName):$(Build.BuildId)'
-  registryName: '$(registryName)'
-  registryUsername: '$(registryUsername)'
-  registryPassword: '$(registryPassword)'
+  imageName: '$(YOURIMAGENAME):$(Build.BuildId)'
+  registryName: '$(REGISTRYNAME)'
+  registryUsername: '$(REGISTRYUSERNAME)'
+  registryPassword: '$(REGISTRYPASSWORD)'
 
 
 steps:
@@ -29,8 +28,4 @@ steps:
     docker login $(registryName) -u $(registryUsername) -p $(registryPassword)
     docker push $(registryName)/$(imageName)
   displayName: 'Docker Push'
-
-
-
-
 
