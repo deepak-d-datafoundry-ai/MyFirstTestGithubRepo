@@ -4,7 +4,6 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-
 steps:
 - task: UsePythonVersion@0
   inputs:
@@ -19,7 +18,18 @@ steps:
   displayName: 'Docker Build'
 
 - script: |
+    sudo apt-get update && sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+    wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+    echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+    sudo apt-get update
+    sudo apt-get install trivy -y
+  displayName: 'Install Trivy'
+
+- script: |
+    trivy image --exit-code 1 --severity HIGH,CRITICAL $(REGISTRYNAME)/$(YOURIMAGENAME):$(Build.BuildId)
+  displayName: 'Run Trivy Vulnerability Scan'
+
+- script: |
     docker login $(REGISTRYNAME) -u $(REGISTRYUSERNAME) -p $(REGISTRYPASSWORD)
     docker push $(REGISTRYNAME)/$(YOURIMAGENAME):$(Build.BuildId)
   displayName: 'Docker Push'
-
